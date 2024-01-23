@@ -12,6 +12,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics.pairwise import linear_kernel
 
 
 # In[ ]:
@@ -71,27 +72,27 @@ def preprocess_sentences(text):
     finalsent = finalsent.replace("'d", " would")
     return finalsent
 
-# Assuming you already have a DataFrame with a "Plot" column named results_df
 movies["plot_processed"] = movies["Plot"].apply(preprocess_sentences)
 
 
 # In[ ]:
 
 
-# TF-IDF Vectorization
+   # TF-IDF Vectorization
    tfidf_vectorizer = TfidfVectorizer()
-   tfidf_matrix = tfidf_vectorizer.fit_transform(df['plot_processed'])
+   tfidf_matrix = tfidf_vectorizer.fit_transform(movies['plot_processed'])
 
    # Compute cosine similarity
    cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
 
    def get_recommendations(title, cosine_sim=cosine_sim):
-       idx = df[df['Title'] == title].index[0]
-       sim_scores = list(enumerate(cosine_sim[idx]))
-       sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-       sim_scores = sim_scores[1:11]  # Get top 10 recommendations excluding the input movie
-       movie_indices = [i[0] for i in sim_scores]
-       return df['Title'].iloc[movie_indices]
+    idx = movies[movies['Title'] == title].index[0]
+    sim_scores = list(enumerate(cosine_sim[idx]))
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+    sim_scores = sim_scores[1:11]  # Get top 10 recommendations excluding the input movie
+    movie_indices = [i[0] for i in sim_scores]
+    return movies['Title'].iloc[movie_indices]
+
 
 
 # In[ ]:
