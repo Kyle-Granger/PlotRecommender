@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
-
 
 # Import necessary libraries
 import pandas as pd
@@ -14,25 +12,16 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.metrics.pairwise import linear_kernel
 
-
-# In[ ]:
-
-
 #Load the data
 file_path = ""
 
 df = pd.read_csv(file_path)
-df
-
-
-# In[ ]:
 
 
 #Filter the American and British movies
 movies = df[df['Origin/Ethnicity'].isin(['American', 'British'])]
 
 
-# In[ ]:
 
 
 nltk.download('punkt')
@@ -43,10 +32,6 @@ nltk.download('stopwords')
 lemmatizer = WordNetLemmatizer()
 stop_words = set(stopwords.words('english'))
 VERB_CODES = {'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ'}
-
-
-
-# In[ ]:
 
 
 def preprocess_sentences(text):
@@ -74,10 +59,6 @@ def preprocess_sentences(text):
 
 movies["plot_processed"] = movies["Plot"].apply(preprocess_sentences)
 
-
-# In[ ]:
-
-
    # TF-IDF Vectorization
    tfidf_vectorizer = TfidfVectorizer()
    tfidf_matrix = tfidf_vectorizer.fit_transform(movies['plot_processed'])
@@ -92,16 +73,6 @@ movies["plot_processed"] = movies["Plot"].apply(preprocess_sentences)
     sim_scores = sim_scores[1:11]  # Get top 10 recommendations excluding the input movie
     movie_indices = [i[0] for i in sim_scores]
     return movies['Title'].iloc[movie_indices]
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
 
 
 
